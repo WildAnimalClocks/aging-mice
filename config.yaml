@@ -1,0 +1,7 @@
+run_name: aging_mice_1
+path_to_fastq: /Volumes/...
+path_to_fast5: /Volumes/...
+reference_file: 
+barcodes:
+
+genes:
