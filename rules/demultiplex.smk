@@ -1,6 +1,6 @@
 rule demultiplex_qcat:
     input:
-        reads=expand(run_name + "_all.fastq")
+        reads=run_name + "_all.fastq"
     output:
         fastq=expand("demultiplexed/{barcode}.fastq",barcode=config["barcodes"]),
         report="data/demultiplex_report.txt"

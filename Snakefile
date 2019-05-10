@@ -9,7 +9,7 @@ run_name = str(config["run_name"])
 
 rule all:
     input:
-        #expand("{barcode}.consensus.fasta",barcode=config["barcodes"])
+        expand("demultiplexed/{barcode}.fastq",barcode=config["barcodes"])
 
 
 ##### Modules #####

@@ -1,7 +1,42 @@
 run_name: aging_mice_1
-path_to_fastq: /Volumes/...
-path_to_fast5: /Volumes/...
-reference_file: 
+path_to_fastq: /Volumes/Untitled/mice_age_1/20190507_1326_MN20651_FAH91034_1ad4ffed/fastq_pass
+path_to_fast5: /Volumes/Untitled/mice_age_1/20190507_1326_MN20651_FAH91034_1ad4ffed/fast5_pass
+reference_file: references/genes.fasta
+min_length: 100
+max_length: 800
 barcodes:
-
+  BC01: BC01
+  BC02: BC02
+  BC03: BC03
+  BC04: BC04
+  BC05: BC05
+  BC06: BC06
+  BC07: BC07
+  BC08: BC08
+  BC09: BC09
+  BC10: BC10
+  BC11: BC11
+  BC12: BC12
+  BC13: BC13
+  BC14: BC14
+  BC15: BC15
+  BC16: BC16
+  BC17: BC17
+  BC18: BC18
+  BC19: BC19
+  BC20: BC20
+  BC21: BC21
+  BC22: BC22
+  BC23: BC23
+  BC24: BC24
 genes:
+  PRIMA1: PRIMA1
+  HSP4: HSP4
+  KCNS1: KCNS1
+  GM7: GM7
+  GM9: GM9
+  PRIMA1_unmodified: PRIMA1_unmodified
+  HSP4_unmodified: HSP4_unmodified
+  KCNS1_unmodified: KCNS1_unmodified
+  GM7_unmodified: GM7_unmodified
+  GM9_unmodified: GM9_unmodified

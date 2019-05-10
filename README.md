@@ -38,4 +38,25 @@ conda deactivate
 
 ## customising the pipeline
 
-Inside the ``config.yaml`` file, you can insert your MinION ``run_name`` and the barcode and gene names. I have filled in the 5 gene names from the original PCR and MinION run, but this can be modified here in the future if the study design changes.
+To run the analysis using snakemake, you may need to customise the ``config.yaml`` file.
+
+Inside the ``config.yaml`` file, you can change your MinION ``run_name`` and the barcode and gene names. I have filled in the 5 gene names from the original PCR and MinION run, but this can be modified here in the future if the study design changes.
+
+Ensure ```path_to_fast5``` and ```path_to_fastq``` point to where your data is.
+
+## running the pipeline
+
+To start the pipeline, in a terminal window in the artic-polio directory, simply enter:
+
+```bash
+snakemake
+```
+
+If you wish to run your pipeline using more than one core (**recommended**), enter:
+
+```bash
+snakemake --cores X
+```
+
+where X is the number of threads you wish to run.
+

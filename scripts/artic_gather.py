@@ -1,5 +1,4 @@
-#Author: Nick Loman, 2018
-
+#adapted from Nick Loman's script gather.py
 import sys
 from Bio import SeqIO
 import tempfile
@@ -9,79 +8,67 @@ import shutil
 import pandas as pd
 from collections import defaultdict
 
-# extract with constraints:
-#   -- only one group ever
-#   -- only one flowcell ID ever
-#   -- always unique read ID
+directory = str(snakemake.params.path_to_fastq)
+run_name=str(snakemake.params.run_name)
+min_length=int(snakemake.params.min_length)
+max_length=int(snakemake.params.max_length)
 
-def run(parser, args):
-	if len(args.directory) and not args.prefix:
-		print("Must supply a prefix if gathering multiple directories!", file=sys.stderr)
-		raise SystemExit
+all_fastq_outfn = "{}_all.fastq".format(run_name)
+print(all_fastq_outfn)
+all_fastq_outfh = open(all_fastq_outfn, "w")
 
-	if args.prefix:
-		prefix = args.prefix
-	else:
-		prefix = os.path.split(args.directory[0])[-1]
+fastq = defaultdict(list)
+for root, dirs, files in os.walk(directory):
+    paths = os.path.split(root)
+    local_dir = paths[-1]
+    fastq[local_dir].extend([root+'/'+f for f in files if f.endswith('.fastq')])
 
-	all_fastq_outfn = "%s_all.fastq" % (prefix)
-	all_fastq_outfh = open(all_fastq_outfn, "w")
+for local_dir, fastq in list(fastq.items()):
+    if len(fastq):
+        fastq_outfn = "{}_{}.fastq".format(run_name, local_dir)
+        outfh = open(fastq_outfn, "w")
+        print("Processing {} files in {}".format(len(fastq), local_dir))
 
-	fastq = defaultdict(list)
-	for directory in args.directory:
-		if args.guppy:
-			d = '%s' % (directory)
-		else:
-			d = '%s/workspace/pass' % (directory)
+        dups = set()
+        uniq = 0
+        total = 0    
+        for f in fastq:
+            for rec in SeqIO.parse(open(f), "fastq"):
+                if len(rec) > max_length:
+                    continue
+                if len(rec) < min_length:
+                    continue
 
-		for root, dirs, files in os.walk(d):
-			paths = os.path.split(root)
-			barcode_directory = paths[-1]
+                total += 1
+                if rec.id not in dups:
+                    SeqIO.write([rec], outfh, "fastq")
+                    SeqIO.write([rec], all_fastq_outfh, "fastq")
 
-			fastq[barcode_directory].extend([root+'/'+f for f in files if f.endswith('.fastq')])
+                    dups.add(rec.id)
+                    uniq += 1
 
-	for barcode_directory, fastq in list(fastq.items()):
-		if len(fastq):
-			fastq_outfn = "%s_%s.fastq" % (prefix, barcode_directory)
-			outfh = open(fastq_outfn, "w")
-			print("Processing %s files in %s" % (len(fastq), barcode_directory), file=sys.stderr)
+        outfh.close()
 
-			dups = set()
-			uniq = 0
-			total = 0	
-			for f in fastq:
-				for rec in SeqIO.parse(open(f), "fastq"):
-					if args.max_length and len(rec) > args.max_length:
-						continue
-					if args.min_length and len(rec) < args.min_length:
-						continue
+        print("%s\t%s\t%s" % (fastq_outfn, total, uniq))
 
-					total += 1
-					if rec.id not in dups:
-						SeqIO.write([rec], outfh, "fastq")
-						SeqIO.write([rec], all_fastq_outfh, "fastq")
+all_fastq_outfh.close()
 
-						dups.add(rec.id)
-						uniq += 1
+print("Collecting summary files\n", file=sys.stderr)
 
-			outfh.close()
+dfs = []
 
-			print("%s\t%s\t%s" % (fastq_outfn, total, uniq))
+summary_outfn = "%s_sequencing_summary.txt" % (run_name)
+summaryfh = open(summary_outfn, "w")
 
-	all_fastq_outfh.close()
+for r, d, f in os.walk(directory):
+    for fn in f:
+        if fn.startswith("sequencing_summary") and fn.endswith(".txt"):
+            
+            summ_file = r + '/' + fn
+            df = pd.read_csv(summaryfn, sep="\t")
+            dfs.append(df)
 
-	print("Collecting summary files\n", file=sys.stderr)
+pd.concat(dfs).to_csv(summaryfh, sep="\t", index=False)
+summaryfh.close()
 
-	dfs = []
 
-	summary_outfn = "%s_sequencing_summary.txt" % (prefix)
-	summaryfh = open(summary_outfn, "w")
-
-	for directory in args.directory:
-		d = '%s/sequencing_summary*.txt' % (directory,)
-		for summaryfn in glob.glob(d):
-			df = pd.read_csv(summaryfn, sep="\t")
-			dfs.append(df)
-
-	pd.concat(dfs).to_csv(summaryfh, sep="\t", index=False)
-	summaryfh.close()
