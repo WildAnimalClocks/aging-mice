@@ -8,5 +8,7 @@ rule gather:
     output:
         summary="{run_name}_sequencing_summary.txt",
         reads="{run_name}_all.fastq"
-    script:
-        "../scripts/artic_gather.py"
+    shell:
+        "python scripts/gather_filter.py --min-length {params.min_length} "
+        "--max-length {params.max_length} --run-name {params.run_name} "
+        "--path-to-fastq {params.path_to_fastq}"
