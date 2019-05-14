@@ -25,15 +25,27 @@ rule blastn:
         "blastn -task blastn -db {input.db} "
         "-query {input.reads} -out {output} "
         "-num_threads 16 -outfmt 10"
+
+rule gene_ref_generate:
+    input:
+        "references/genes.fasta"
+    output:
+        expand("references/genes/{gene}.fasta", gene=config["genes"])
+    run:
+        references = str(input)
+        for record in SeqIO.parse(references,"fasta"):
+            with open("references/genes/"+record.id+".fasta","w") as f:
+                f.write(">{}\n{}\n".format(record.id, record.seq))
 rule bin:
     input:
         blast="blast_results/{barcode}.blast.csv",
-        reads="demultiplexed/{barcode}.fastq"
+        reads="demultiplexed/{barcode}.fastq",
+        
     params:
         outdir="binned/{barcode}"
     output:
-        summary="binned/{barcode}/binning_report.txt"
-        #fastq=expand("binned/{{barcode}}/{gene}.fastq", gene=config["genes"])
+        summary="binned/{barcode}/binning_report.txt",
+        fastq=expand("binned/{{barcode}}/{gene}.fastq", gene=config["genes"])
     run:
         blast_file = str(input.blast)
         reads = str(input.reads)
@@ -65,9 +77,9 @@ rule bin:
 
         with open(summary,"w") as f:
             for gene in records:
-                outfile = outdir + '/' + gene + '.fastq'
-                f.write("{}: {} records written to {}. \n".format(gene,len(records[gene]),outfile))
-                with open(outfile, "w") as fw:
+                out_file = outdir + '/' + gene + '.fastq'
+                f.write("{}: {} records written to {}. \n".format(gene,len(records[gene]),out_file))
+                with open(out_file, "w") as fw:
                     SeqIO.write(records[gene], fw, "fastq")
 
 

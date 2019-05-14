@@ -10,11 +10,11 @@ run_name = str(config["run_name"])
 
 rule all:
     input:
-        expand("binned/{barcode}/binning_report.txt",barcode=config["barcodes"])
-        #expand("binned/{barcode}/{gene}.fastq",gene=config["genes"],barcode=config["barcodes"])
+        expand("binned/{barcode}/binning_report.txt",barcode=config["barcodes"]),
+        expand("binned/{barcode}/mapped/{gene}.sam",gene=config["genes"],barcode=config["barcodes"])
 
 ##### Modules #####
 include: "rules/gather.smk"
 include: "rules/demultiplex.smk"
-#include: "rules/call.smk"
+include: "rules/map_sort_call.smk"
 include: "rules/bin.smk"
