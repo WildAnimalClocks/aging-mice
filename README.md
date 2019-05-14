@@ -46,7 +46,7 @@ Ensure ```path_to_fast5``` and ```path_to_fastq``` point to where your data is.
 
 ## running the pipeline
 
-To start the pipeline, in a terminal window in the artic-polio directory, simply enter:
+To start the pipeline, in a terminal window in the aging-mice directory, simply enter:
 
 ```bash
 snakemake

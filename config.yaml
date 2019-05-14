@@ -35,8 +35,8 @@ genes:
   KCNS1: KCNS1
   GM7: GM7
   GM9: GM9
-  Prima1_unmodified: Prima1_unmodified
-  HSP4_unmodified: HSP4_unmodified
-  KCNS1_unmodified: KCNS1_unmodified
-  GM7_unmodified: GM7_unmodified
-  GM9_unmodified: GM9_unmodified
+  # Prima1_unmodified: Prima1_unmodified
+  # HSP4_unmodified: HSP4_unmodified
+  # KCNS1_unmodified: KCNS1_unmodified
+  # GM7_unmodified: GM7_unmodified
+  # GM9_unmodified: GM9_unmodified
