@@ -20,7 +20,7 @@ run_name=params.run_name
 min_length=params.min_length
 max_length=params.max_length
 
-all_fastq_outfn = "{}_all.fastq".format(run_name)
+all_fastq_outfn = "pipeline_output/{}_all.fastq".format(run_name)
 all_fastq_outfh = open(all_fastq_outfn, "w")
 
 fastq = defaultdict(list)
@@ -58,7 +58,7 @@ print("Collecting summary files\n", file=sys.stderr)
 
 dfs = []
 
-summary_outfn = "{}_sequencing_summary.txt".format(run_name)
+summary_outfn = "pipeline_output/{}_sequencing_summary.txt".format(run_name)
 summaryfh = open(summary_outfn, "w")
 
 for r, d, f in os.walk(directory):

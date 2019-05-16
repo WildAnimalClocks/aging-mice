@@ -4,6 +4,8 @@ path_to_fast5: /Volumes/Untitled/mice_age_1/20190507_1326_MN20651_FAH91034_1ad4f
 reference_file: references/genes.fasta
 min_length: 100
 max_length: 800
+primer_scheme_dir: primer-schemes # todo 
+primer_scheme_version: PV/V1 # todo
 barcodes:
   barcode01: barcode01
   barcode02: barcode02
