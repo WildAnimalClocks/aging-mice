@@ -60,3 +60,15 @@ snakemake --cores X
 
 where X is the number of threads you wish to run.
 
+# pipeline description
+
+1. gather \
+Parses all of the basecalled fastq files from ``guppy``, applies a length filter that can be customised in the ``config.yaml`` file and writes the reads to a single file ``run_name_all.fastq``. This script also searches the fastq directories for ``sequencing_summary`` files and combines them into a single file: ``run_name_sequencing_summary.txt``. These files will be output in the ``pipeline_output`` directory.
+2. demultiplex_qcat \
+For each read in the ``run_name_all.fastq`` file, identifies barcodes and outputs reads into respective files, binned by barcode. These files appear in the ``demultiplexed`` directory, in ``pipeline_output``.
+3. blastn \
+For each ``barcode.fastq`` file, each read is blasted against a database containing the 5 genes of interest in modified and unmodified form.
+4. bin \
+This step parses each blast output and assesses for each read what the best blast hit is. The reads are then binned by gene and a count of 'modified vs unmodified' best blast hits for each barcode for each gene is performed. This determines which reference (modified or unmodified) is most suited to take forward into nanopolish for each barcode for each gene.
+5. minimap2
+6. nanopolish or artic minion pipeline? TBD
