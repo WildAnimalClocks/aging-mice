@@ -70,5 +70,6 @@ For each read in the ``run_name_all.fastq`` file, identifies barcodes and output
 For each ``barcode.fastq`` file, each read is blasted against a database containing the 5 genes of interest in modified and unmodified form.
 4. bin \
 This step parses each blast output and assesses for each read what the best blast hit is. The reads are then binned by gene and a count of 'modified vs unmodified' best blast hits for each barcode for each gene is performed. This determines which reference (modified or unmodified) is most suited to take forward into nanopolish for each barcode for each gene.
-5. minimap2
-6. nanopolish or artic minion pipeline? TBD
+5. minimap2, sort the reads and index them using ``samtools``.
+6. Downsample and filter by read quality using a custom script (still need to write this).
+7. ``nanopolish index`` and run ``nanopolish``.

@@ -10,6 +10,8 @@ rule nanopolish_index:
         readdb="pipeline_output/"+ run_name+"_all.fastq.index.readdb",
         index="pipeline_output/"+run_name+"_all.fastq.index"
     shell:
-        "nanopolish index -d {params.path_to_fast5} -s {input.summary} {input.reads}"
+        "nanopolish index -d {params.path_to_fast5} {input.reads}"
+
+
 
 
