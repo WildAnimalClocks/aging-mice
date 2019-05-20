@@ -48,7 +48,7 @@ rule organise_minion_output:
         "{barcode}_{gene}.variants.tab",
         "{barcode}_{gene}.vcf"
     params:
-        output_dir="pipeline_output/minion_output/{barcode}"
+        output_dir="pipeline_output/minion_output/{barcode}_bin"
     output:
         "pipeline_output/minion_output/{barcode}_bin/{barcode}_{gene}.alignreport.er",
         "pipeline_output/minion_output/{barcode}_bin/{barcode}_{gene}.alignreport.txt",

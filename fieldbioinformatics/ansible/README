@@ -1,0 +1,23 @@
+
+Ansible scripts by Nick Loman and Radoslaw Poplawski (originated during Porecamp project)
+
+## Getting started
+
+apt-get install software-properties-common
+apt-add-repository ppa:ansible/ansible
+apt-get update
+apt-get install ansible
+
+apt-get install git python-pip
+pip install passlib
+
+python generate_user_passwords.py user1:pass1 user2:pass2 > users.yml
+
+From Ubuntu 16.04 as ubuntu user:
+
+ansible-playbook --become --become-method sudo prepare_laptop.yml
+
+
+From Docker container:
+
+ansible-playbook --become --become-method su prepare_laptop.yml

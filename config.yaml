@@ -30,7 +30,7 @@ barcodes:
   # barcode23: barcode23
   # barcode24: barcode24
 genes:
-  prima1: prima1
+  PRIMA1: PRIMA1
   HSP4: HSP4
   KCNS1: KCNS1
   GM7: GM7

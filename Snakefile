@@ -11,7 +11,8 @@ run_name = str(config["run_name"])
 
 rule all:
     input:
-        expand("pipeline_output/minion_output/{barcode}_bin/{barcode}_{gene}.consensus.fasta",gene=config["genes"],barcode=config["barcodes"])
+        expand("pipeline_output/minion_output/{barcode}_bin/{barcode}_{gene}.consensus.fasta",gene=config["genes"],barcode=config["barcodes"]),
+        expand("pipeline_output/binned/{barcode}_bin/reads/{gene}.fastq", gene=config["genes"],barcode=config["barcodes"])
 
 ##### Modules #####
 include: "rules/gather.smk"

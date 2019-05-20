@@ -32,7 +32,8 @@ rule bin:
         reads="pipeline_output/demultiplexed/{barcode}.fastq",
         references="references/genes.all.fasta"
     params:
-        outdir="pipeline_output/binned/{barcode}_bin/reads"
+        outdir="pipeline_output/binned/{barcode}_bin/reads/",
+        sample="{barcode}"
     output:
         summary="pipeline_output/binned/{barcode}_bin/binning_report.txt",
         ref=expand("pipeline_output/binned/{{barcode}}_bin/primer-schemes/minion/V_{gene}/minion.reference.fasta", gene=config["genes"]),
@@ -41,4 +42,5 @@ rule bin:
     shell:
         "python scripts/bin.py --blast_file {input.blast} "
         "--reference_file {input.references} --reads {input.reads} "
-        "--output-dir {params.outdir} --summary {output.summary}"
+        "--output_dir {params.outdir} --summary {output.summary} "
+        "--sample {params.sample}"
