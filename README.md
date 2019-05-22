@@ -63,6 +63,8 @@ where X is the number of threads you wish to run.
 # pipeline description
 
 <img src="https://github.com/aineniamh/aging-mice/blob/master/one_sample_dag.svg">
+
+
 1. setup ``artic fieldbioinformatics`` package \
 Automatic setup of this on startup of the pipeline. Gives the user access to ``artic minion`` script for step below.
 2. gather \
