@@ -62,14 +62,28 @@ where X is the number of threads you wish to run.
 
 # pipeline description
 
-1. gather \
+<img src="https://github.com/aineniamh/aging-mice/blob/master/one_sample_dag.svg">
+1. setup ``artic fieldbioinformatics`` package \
+Automatic setup of this on startup of the pipeline. Gives the user access to ``artic minion`` script for step below.
+2. gather \
 Parses all of the basecalled fastq files from ``guppy``, applies a length filter that can be customised in the ``config.yaml`` file and writes the reads to a single file ``run_name_all.fastq``. This script also searches the fastq directories for ``sequencing_summary`` files and combines them into a single file: ``run_name_sequencing_summary.txt``. These files will be output in the ``pipeline_output`` directory.
-2. demultiplex_qcat \
+3. demultiplex_qcat \
 For each read in the ``run_name_all.fastq`` file, identifies barcodes and outputs reads into respective files, binned by barcode. These files appear in the ``demultiplexed`` directory, in ``pipeline_output``.
-3. blastn \
+4. blastn \
 For each ``barcode.fastq`` file, each read is blasted against a database containing the 5 genes of interest in modified and unmodified form.
-4. bin \
-This step parses each blast output and assesses for each read what the best blast hit is. The reads are then binned by gene and a count of 'modified vs unmodified' best blast hits for each barcode for each gene is performed. This determines which reference (modified or unmodified) is most suited to take forward into nanopolish for each barcode for each gene.
-5. minimap2, sort the reads and index them using ``samtools``.
-6. Downsample and filter by read quality using a custom script (still need to write this).
-7. ``nanopolish index`` and run ``nanopolish``.
+5. bin \
+This step parses each blast output and assesses for each read what the best blast hit is. The reads are then binned by gene and a count of 'modified vs unmodified' best blast hits for each barcode for each gene is performed. This determines which reference (modified or unmodified) is most suited to take forward into nanopolish for each barcode for each gene. It also creates the respective bed file for the ``artic minion`` pipeline to use.
+6. nanopolish_index \
+Creates the nanopolish index necessary for running nanopolish in the next step. It accesses the gathered fastq and sequencing summary files from step 2 and also the signal-level fast5 data.
+7. artic_minion \
+The ``artic minion`` pipeline, written by Nick Loman, is then run for each ``barcode_gene`` combination in order to generate a high-quality consensus sequence, using an approach informed by signal-level data. This pipeline performs the following steps:
+    * Maps against a given reference and sorts reads using ``bwa`` and ``samtools`` respectively.
+    * Runs the ``artic align_trim`` script. This script takes in a bed file and your alignment and assesses whether the primers are correctly paired according to the bed file, discarding reads that are not, and normalises the read coverage across the genome. It is run twice, first to trim off the barcodes and the primers and second to just trim off the barcodes.
+    * Loads the ``nanopolish index`` created in step 8.
+    * Runs ``nanopolish variants`` twice, on the barcode-and-primer-trimmed bam and on the barcode-trimmed bam.
+    * Generates a variant frequency plot.
+    * Runs ``margin_cons``, a custom script that filters the variants, masking sites that do not reach the depth threshold of 20 and do not reach a quality threshold of 200, and produces a consensus sequence with 'N' masking on the relevant sites. It uses the vcf from nanopolish without primer-trimming but the primer-trimmed bam file so that primer sequences do not count towards depth calculation. A report is also generated.
+8. organise_minion_output \
+Moves the output for each gene into the relevant barcode directory ``pipeline_output/minion_output/barcodeX_bin/``.
+9. count \
+Parses the output vcf files and produces a report, ``cpg_report.csv`` in the ``pipeline_output`` directory, with information about percentage reads and read counts of modified/ unmodified CpG sites.
