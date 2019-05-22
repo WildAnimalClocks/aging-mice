@@ -10,7 +10,7 @@ rule artic_minion:
         primer_version = "minion/V_{gene}",
         sample = "{barcode}_{gene}"
     threads:
-        8
+        2
     output:
         "{barcode}_{gene}.alignreport.er",
         "{barcode}_{gene}.alignreport.txt",

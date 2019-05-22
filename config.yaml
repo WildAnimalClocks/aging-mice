@@ -5,38 +5,35 @@ reference_file: references/genes.fasta
 min_length: 100
 max_length: 800
 barcodes:
+  # sampleX: sampleX
   barcode01: barcode01
-  # barcode02: barcode02
-  # barcode03: barcode03
-  # barcode04: barcode04
-  # barcode05: barcode05
-  # barcode06: barcode06
-  # barcode07: barcode07
-  # barcode08: barcode08
-  # barcode09: barcode09
-  # barcode10: barcode10
-  # barcode11: barcode11
-  # barcode12: barcode12
-  # barcode13: barcode13
-  # barcode14: barcode14
-  # barcode15: barcode15
-  # barcode16: barcode16
-  # barcode17: barcode17
-  # barcode18: barcode18
-  # barcode19: barcode19
-  # barcode20: barcode20
-  # barcode21: barcode21
-  # barcode22: barcode22
-  # barcode23: barcode23
-  # barcode24: barcode24
+  barcode02: barcode02
+  barcode03: barcode03
+  barcode04: barcode04
+  barcode05: barcode05
+  barcode06: barcode06
+  barcode07: barcode07
+  barcode08: barcode08
+  barcode09: barcode09
+  barcode10: barcode10
+  barcode11: barcode11
+  barcode12: barcode12
+  barcode13: barcode13
+  barcode14: barcode14
+  barcode15: barcode15
+  barcode16: barcode16
+  barcode17: barcode17
+  barcode18: barcode18
+  barcode19: barcode19
+  barcode20: barcode20
+  barcode21: barcode21
+  barcode22: barcode22
+  barcode23: barcode23
+  barcode24: barcode24
 genes:
   PRIMA1: PRIMA1
   HSP4: HSP4
   KCNS1: KCNS1
   GM7: GM7
   GM9: GM9
-  # Prima1_unmodified: Prima1_unmodified
-  # HSP4_unmodified: HSP4_unmodified
-  # KCNS1_unmodified: KCNS1_unmodified
-  # GM7_unmodified: GM7_unmodified
-  # GM9_unmodified: GM9_unmodified
+

@@ -24,7 +24,7 @@ rule blastn:
     shell:
         "blastn -task blastn -db {input.db} "
         "-query {input.reads} -out {output} "
-        "-num_threads 2 -outfmt 10"
+        "-num_threads 1 -outfmt 10"
             
 rule bin:
     input:
