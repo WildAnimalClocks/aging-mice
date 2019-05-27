@@ -62,17 +62,18 @@ with open(summary,"w") as fwsum:
             fwbed = open("pipeline_output/binned/"+barcode+"_bin/primer-schemes/minion/V_"+gene+"/minion.scheme.bed","w")
             unmodified_count = mod_counter[gene+"_unmodified"]
             modified_count = mod_counter[gene+"_modified"]
-            if unmodified_count > modified_count:
-                #use the unmodified gene as reference for mapping
-                sequence= seq_dict[gene+"_unmodified"]
-                fwref.write(">{}\n{}\n".format(gene,sequence))
-                fwbed.write("{}\t{}\t{}\t{}_LEFT\t1\n".format(gene,0,30,gene))
-                fwbed.write("{}\t{}\t{}\t{}_RIGHT\t1\n".format(gene,len(sequence)-30,len(sequence),gene))
-            else:
-                sequence= seq_dict[gene+"_modified"]
-                fwref.write(">{}\n{}\n".format(gene,sequence))
-                fwbed.write("{}\t{}\t{}\t{}_LEFT\t1\n".format(gene,0,30,gene))
-                fwbed.write("{}\t{}\t{}\t{}_RIGHT\t1\n".format(gene,len(sequence)-30,len(sequence),gene))
+            # if unmodified_count > modified_count:
+            #     #use the unmodified gene as reference for mapping
+            #     sequence= seq_dict[gene+"_unmodified"]
+            #     fwref.write(">{}\n{}\n".format(gene,sequence))
+            #     fwbed.write("{}\t{}\t{}\t{}_LEFT\t1\n".format(gene,0,30,gene))
+            #     fwbed.write("{}\t{}\t{}\t{}_RIGHT\t1\n".format(gene,len(sequence)-30,len(sequence),gene))
+            # else:
+            sequence= seq_dict[gene+"_modified"]
+            sequence= str(sequence).replace("CG","TG")
+            fwref.write(">{}\n{}\n".format(gene,sequence))
+            fwbed.write("{}\t{}\t{}\t{}_LEFT\t1\n".format(gene,0,30,gene))
+            fwbed.write("{}\t{}\t{}\t{}_RIGHT\t1\n".format(gene,len(sequence)-30,len(sequence),gene))
 
             print("In file:{}\n For gene: {}\n\tUnmodified hit count: {}\n\tModified hit count: {}\n".format(blast_file, gene, unmodified_count, modified_count))
             out_file = outdir + '/' + gene + '.fastq'

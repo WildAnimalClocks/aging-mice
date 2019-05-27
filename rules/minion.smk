@@ -1,6 +1,19 @@
+rule double_check_length:
+    input:
+        "pipeline_output/binned/{barcode}_bin/reads/{gene}.fastq"
+    output:
+        "pipeline_output/binned/{barcode}_bin/filtered/{gene}.fastq"
+    run:
+        filtered=[]
+        for record in SeqIO.parse(str(input), "fastq"):
+            if len(record)>100:
+                filtered.append(record)
+        SeqIO.write(filtered,str(output),"fastq")
+
+
 rule artic_minion:
     input:
-        read_file = "pipeline_output/binned/{barcode}_bin/reads/{gene}.fastq",
+        read_file = "pipeline_output/binned/{barcode}_bin/filtered/{gene}.fastq",
         nano_read_file = "pipeline_output/"+run_name + "_all.fastq",
         index="pipeline_output/"+run_name+"_all.fastq.index",
         fasta="pipeline_output/binned/{barcode}_bin/primer-schemes/minion/V_{gene}/minion.reference.fasta",
@@ -10,7 +23,7 @@ rule artic_minion:
         primer_version = "minion/V_{gene}",
         sample = "{barcode}_{gene}"
     threads:
-        2
+        1
     output:
         "{barcode}_{gene}.alignreport.er",
         "{barcode}_{gene}.alignreport.txt",
