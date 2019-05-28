@@ -12,6 +12,7 @@ parser.add_argument("--reads", action="store", type=str, dest="reads")
 parser.add_argument("--output_dir", action="store", type=str, dest="output_dir")
 parser.add_argument("--summary", action="store", type=str, dest="summary")
 parser.add_argument("--sample", action="store", type=str, dest="sample")
+parser.add_argument("--primers", action="store", type=str, dest="primers")
 
 args = parser.parse_args()
 
@@ -22,6 +23,8 @@ reads = str(args.reads)
 outdir = str(args.output_dir)
 summary = str(args.summary)
 barcode=str(args.sample)
+primers= str(args.primers)
+
 print(barcode)
 hits = collections.defaultdict(list)
 with open(blast_file, "r") as f:
@@ -54,6 +57,12 @@ for record in SeqIO.parse(refs,"fasta"):
     print(record.id)
     seq_dict[record.id]=record.seq.upper()
 
+primer_coords={}
+with open(primers,"r") as f:
+    for l in f:
+        l=l.rstrip('\n')
+        tokens=l.split(',')
+        primer_coords[tokens[0]]= (len(tokens[1]), len(tokens[2]))
 
 with open(summary,"w") as fwsum:
     for gene in records:
@@ -72,8 +81,8 @@ with open(summary,"w") as fwsum:
             sequence= seq_dict[gene+"_modified"]
             sequence= str(sequence).replace("CG","TG")
             fwref.write(">{}\n{}\n".format(gene,sequence))
-            fwbed.write("{}\t{}\t{}\t{}_LEFT\t1\n".format(gene,0,30,gene))
-            fwbed.write("{}\t{}\t{}\t{}_RIGHT\t1\n".format(gene,len(sequence)-30,len(sequence),gene))
+            fwbed.write("{}\t{}\t{}\t{}_LEFT\t1\n".format(gene,0,primer_coords[gene][0],gene))
+            fwbed.write("{}\t{}\t{}\t{}_RIGHT\t1\n".format(gene,len(sequence)-primer_coords[gene][1],len(sequence),gene))
 
             print("In file:{}\n For gene: {}\n\tUnmodified hit count: {}\n\tModified hit count: {}\n".format(blast_file, gene, unmodified_count, modified_count))
             out_file = outdir + '/' + gene + '.fastq'

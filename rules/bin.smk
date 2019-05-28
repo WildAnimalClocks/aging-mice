@@ -30,7 +30,8 @@ rule bin:
     input:
         blast="pipeline_output/blast_results/{barcode}.blast.csv",
         reads="pipeline_output/demultiplexed/{barcode}.fastq",
-        references="references/genes.all.fasta"
+        references="references/genes.all.fasta",
+        primers="references/primer_sequences.csv"
     params:
         outdir="pipeline_output/binned/{barcode}_bin/reads/",
         sample="{barcode}"
@@ -43,4 +44,4 @@ rule bin:
         "python scripts/bin.py --blast_file {input.blast} "
         "--reference_file {input.references} --reads {input.reads} "
         "--output_dir {params.outdir} --summary {output.summary} "
-        "--sample {params.sample}"
+        "--sample {params.sample} --primers {input.primers}"
