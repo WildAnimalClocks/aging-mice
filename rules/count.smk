@@ -11,8 +11,10 @@
 rule count:
     input:
         vcf=expand("pipeline_output/minion_output/{barcode}_bin/{barcode}_{gene}.vcf",barcode=config["barcodes"], gene=config["genes"]),
-        cpg="references/cpg_sites.csv"
+        cpg="references/cpg_sites.csv",
+        age="references/ages.csv"
     output:
-        "pipeline_output/cpg_report.csv"
+        cpg="pipeline_output/cpg_report.csv",
+        cpg_wide="pipeline_output/cpg_per_position.csv"
     shell:
-        "python scripts/variant_counts.py --cpg_info {input.cpg} --out_file {output}"
+        "python scripts/variant_counts.py --cpg_info {input.cpg} --out_file {output.cpg} --ages {input.age} --cpg_wide {output.cpg_wide}"

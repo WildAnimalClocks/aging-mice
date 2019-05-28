@@ -2,8 +2,8 @@ run_name: aging_mice_1
 path_to_fastq: /Volumes/Untitled/mice_age_1/20190507_1326_MN20651_FAH91034_1ad4ffed/fastq_pass
 path_to_fast5: /Volumes/Untitled/mice_age_1/20190507_1326_MN20651_FAH91034_1ad4ffed/fast5_pass
 reference_file: references/genes.fasta
-min_length: 100
-max_length: 800
+min_length: 170
+max_length: 400
 barcodes:
   # sampleX: sampleX
   barcode01: barcode01

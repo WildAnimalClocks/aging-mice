@@ -9,31 +9,37 @@ import argparse
 parser = argparse.ArgumentParser(description='Counting modifications.')
 parser.add_argument("--out_file", action="store", type=str, dest="out_file")
 parser.add_argument("--cpg_info", action="store", type=str, dest="cpg")
+parser.add_argument("--cpg_wide", action="store", type=str, dest="cpg_wide")
+parser.add_argument("--ages", action="store", type=str, dest="ages")
 args = parser.parse_args()
 
-mod_dict=defaultdict(list)
+age_dict = {}
+with open(str(args.ages),"r") as f:
+    for l in f:
+        l = l.rstrip('\n')
+        tokens = l.split(',')
+        age_dict[tokens[0]]=tokens[1]
+
+mod_list= []
+mod_string = 'barcode,age,'
 with open(str(args.cpg),"r") as f:
     for l in f:
         if not l.startswith("gene"):
             l = l.rstrip('\n')
             tokens = l.split(',')
-            mod_dict[tokens[0]].append(tokens[3])
+            mod_list.append(tokens[0]+"_"+tokens[2])
+            mod_string+=tokens[0]+"_"+tokens[2]+","
+mod_string=mod_string.rstrip(',')
+mod_string += "\n"
     
-fw = open(str(args.out_file),"w")
-fw.write("barcode,gene,position,support_fraction,num_reads_c,total_reads\n")
-
-for r,d,f in os.walk("pipeline_output/minion_output"):
+file_mods=defaultdict(dict)
+for r,d,f in os.walk("pipeline_output_2/minion_output"):
     for filename in f:
         if not filename.endswith("primertrimmed.vcf") and filename.endswith(".vcf"):
             print("Counting CpG modifications in file: {}".format(filename))
 
             barcode,gene=filename.rstrip('.vcf').split('_')
-            
-            file_mods = {}
-            for i in mod_dict[gene]:
-                if int(i) > 30:
-                    file_mods[i]=(100,200,200)
-            
+            print(barcode,gene)
             with open(r+ '/' + filename,"r") as f:
                 for l in f:
                     l=l.rstrip('\n')
@@ -47,42 +53,30 @@ for r,d,f in os.walk("pipeline_output/minion_output"):
                             num_var_reads=int(info_list[0].lstrip("BaseCalledReadsWithVariant="))
                             supp_fraction=float(info_list[4].lstrip("SupportFraction="))
                             total_reads=int(info_list[2].lstrip("TotalReads="))
-                            
-                            file_mods[pos]=(supp_fraction,num_var_reads,total_reads)
-            for i in file_mods:
-                if file_mods[i]==(100,200,200):
-                    for record in SeqIO.parse(r + '/'+filename.rstrip(".vcf")+".consensus.fasta","fasta"):
-#                         print(i, record.seq[int(i)-1])
-                        if record.seq[int(i)-1]!='T':
-                            print(filename, i, record.seq[int(i)-1], "EXCEPTION")
+                            print(gene, pos)
+                            file_mods[(barcode,age_dict[barcode])][gene+'_'+pos]=(supp_fraction,num_var_reads,total_reads)
 
-                fw.write("{},{},{},{},{},{}\n".format(barcode,gene, i, file_mods[i][0],file_mods[i][1],file_mods[i][2]))
+fwide = open(str(args.cpg_wide),"w")
+fwide.write(mod_string)
 
-fw.close()
+fw = open(str(args.out_file),"w")
+fw.write("barcode,age,gene_position,support_fraction,num_reads_c,total_reads\n")
 
-fw = open("pipeline_output/cpg_per_position.csv","w")
-barcode=''
-pos_list = []
-header=''
-with open(str(args.out_file),"r") as f:
-    for l in f:
-        if not l.startswith("barcode,gene"):
-            tokens=l.split(',')
-            if barcode!=tokens[0]:
-                barcode=tokens[0]
-                # print([i[0] for i in sorted(pos_list, key= lambda x : x[0])])
-                # print(len(pos_list))
-                if len(pos_list)==73:
-                    if not header:
-                        header = ','.join([i[0] for i in sorted(pos_list, key= lambda x : x[0])])
-                        print(header)
-                        fw.write("barcode,"+header+'\n')
-                    for x in [i[1] for i in sorted(pos_list, key= lambda x : x[0])]:
-                        info+=x+","
-                    info=info.rstrip(',')
-                    fw.write(barcode+','+info+'\n')
-                pos_list=[]
-                info=''                
-            else:
-                pos_list.append((tokens[1]+'_'+tokens[2], tokens[3]))
+for key in file_mods:
+
+    barcode,age=key
+    fwide.write(barcode+','+age+',')
+    l = ''
+    for i in mod_list:
+        try:
+            supp_fraction=str(file_mods[key][i][0])
+            l+=supp_fraction+','
+            fw.write("{},{},{},{},{},{}\n".format(barcode,age,i,file_mods[key][i][0],file_mods[key][i][0],file_mods[key][i][0]))
+        except:
+            l+='1,'
+            fw.write("{},{},{},{},{},{}\n".format(barcode,age,i,1,"NA","NA"))
+            
+    l=l.rstrip(',')
+    fwide.write(l+'\n')
+fwide.close()
 fw.close()
