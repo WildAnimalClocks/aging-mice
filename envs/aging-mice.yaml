@@ -17,7 +17,7 @@ dependencies:
   - goalign=0.2.8=0
   - gotree=0.2.10=0
   - iqtree=1.6.10
-  - libdeflate=0.8=0
+  - libdeflate
   - mafft=7.407=1
   - matplotlib=3.0.3
   - minimap2=2.16
