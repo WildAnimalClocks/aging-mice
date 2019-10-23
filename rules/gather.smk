@@ -2,10 +2,10 @@ rule gather:
     input:
     params:
         run_name= config["run_name"],
-        path_to_fastq= config["path_to_fastq"],
+        path_to_fastq= config["input_path"],
         min_length= config["min_length"],
         max_length= config["max_length"],
-        outdir = config["output_directory"]
+        outdir = config["output_path"]
     output:
         reads="{outdir}/{run_name}.fastq"
     shell:
