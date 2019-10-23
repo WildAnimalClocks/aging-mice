@@ -8,19 +8,21 @@ from collections import defaultdict
 import argparse
 
 parser = argparse.ArgumentParser(description='Gathering and filtering files.')
-parser.add_argument("--min-length", action="store", type=int, dest="min_length")
-parser.add_argument("--max-length", action="store", type=int, dest="max_length")
-parser.add_argument("--run-name", action="store", type=str, dest="run_name")
-parser.add_argument("--path-to-fastq", action="store", type=str, dest="path_to_fastq")
+parser.add_argument("--min_length", action="store", type=int, dest="min_length")
+parser.add_argument("--max_length", action="store", type=int, dest="max_length")
+parser.add_argument("--run_name", action="store", type=str, dest="run_name")
+parser.add_argument("--path_to_fastq", action="store", type=str, dest="path_to_fastq")
+parser.add_argument("--output_directory", action="store", type=str, dest="output_directory")
 
 params = parser.parse_args()
 
 directory = params.path_to_fastq
-run_name=params.run_name
+
 min_length=params.min_length
 max_length=params.max_length
 
-all_fastq_outfn = "pipeline_output/{}_all.fastq".format(run_name)
+
+all_fastq_outfn = "{}/{}.fastq".format(params.output_directory, params.run_name)
 all_fastq_outfh = open(all_fastq_outfn, "w")
 
 fastq = defaultdict(list)
@@ -54,21 +56,5 @@ for local_dir, fastq in list(fastq.items()):
 
 all_fastq_outfh.close()
 
-print("Collecting summary files\n", file=sys.stderr)
-
-dfs = []
-
-summary_outfn = "pipeline_output/{}_sequencing_summary.txt".format(run_name)
-summaryfh = open(summary_outfn, "w")
-
-for r, d, f in os.walk(directory):
-    for fn in f:
-        if fn.endswith(".txt"):
-            print(fn)
-            summ_file = r + '/' + fn
-            df = pd.read_csv(summ_file, sep="\t")
-            dfs.append(df)
-pd.concat(dfs).to_csv(summaryfh, sep="\t", index=False)
-summaryfh.close()
 
 
