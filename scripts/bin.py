@@ -11,6 +11,7 @@ parser.add_argument("--reads", action="store", type=str, dest="reads")
 parser.add_argument("--output_dir", action="store", type=str, dest="output_dir")
 parser.add_argument("--summary", action="store", type=str, dest="summary")
 parser.add_argument("--sample", action="store", type=str, dest="sample")
+parser.add_argument("--primers", action="store", type=str, dest="primers")
 
 args = parser.parse_args()
 
@@ -48,7 +49,7 @@ for record in SeqIO.parse(args.reference_file,"fasta"):
     seq_dict[record.id]=record.seq.upper()
 
 primer_coords={}
-with open(primers,"r") as f:
+with open(str(args.primers),"r") as f:
     for l in f:
         l=l.rstrip('\n')
         tokens=l.split(',')
@@ -61,7 +62,12 @@ with open(summary,"w") as fwsum:
         print("In file:{}\n For gene: {}\n\tNumber of reads: {}\n".format(args.blast_file, gene, len(records[gene])))
 
         if gene != "none":
+            with open(outdir + '/' + gene + ".primers.bed","w") as fw:
+                fw.write("{},0,{}\n".format(gene, primer_coords[gene][0]))
+                fw.write("{},{},{}\n".format(gene, (len(seq_dict[gene])-primer_coords[gene][1]), len(seq_dict[gene])))
 
-            out_file = outdir + '/' + gene + '.fastq'
-            with open(out_file, "w") as fwseq:
+            with open(outdir + '/' + gene + ".fasta","w") as fw:
+                fw.write(">{}\n{}\n".format(gene, seq_dict[gene]))
+
+            with open(outdir + '/' + gene + '.fastq', "w") as fwseq:
                 SeqIO.write(records[gene], fwseq, "fastq")
