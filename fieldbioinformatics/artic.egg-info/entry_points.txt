@@ -1,6 +1,0 @@
-[console_scripts]
-align_trim = artic.align_trim:main
-artic = artic.pipeline:main
-margin_cons = artic.margin_cons:main
-vcfextract = artic.vcfextract:main
-
