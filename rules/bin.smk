@@ -31,14 +31,11 @@ rule bin:
         blast=config["output_path"]+ "/{barcode}_bin/blast_results/{barcode}.blast.csv",
         reads=config["output_path"]+ "/{barcode}_bin/{barcode}.fastq",
         references=config["references_file"]
-        # primers=config["primers_file"]
     params:
         outdir=config["output_path"]+ "/{barcode}_bin/reads/",
         sample="{barcode}"
     output:
-        summary=config["output_path"]+ "/{barcode}_bin/binning_report.txt",
-        # ref=expand("pipeline_output/binned/{{barcode}}_bin/primer-schemes/minion/V_{gene}/minion.reference.fasta", gene=config["genes"]),
-        # bed=expand("pipeline_output/binned/{{barcode}}_bin/primer-schemes/minion/V_{gene}/minion.scheme.bed", gene=config["genes"]),
+        summary=config["output_path"]+ "/{barcode}_bin/binning_report.csv",
         reads=expand(config["output_path"]+ "/{{barcode}}_bin/reads/{gene}.fastq", gene=config["genes"])
     shell:
         """

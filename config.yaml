@@ -20,7 +20,7 @@ genes:
 
 ##### Mapping reference panel #####
 
-references_file: references/genes.fasta
+references_file: references/genes.converted.modified.fasta
 primers_file: references/primer_sequences.csv
 ##### Porechop options #####
 
