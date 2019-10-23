@@ -1,35 +1,16 @@
-run_name: aging_mice_1
-path_to_fastq: /Volumes/Untitled/mice_age_1/20190507_1326_MN20651_FAH91034_1ad4ffed/fastq_pass
-path_to_fast5: /Volumes/Untitled/mice_age_1/20190507_1326_MN20651_FAH91034_1ad4ffed/fast5_pass
-reference_file: references/genes.fasta
+##### Run configuration #####
+
+run_name: validation_run
+path_to_fastq: fastq_pass
+output_directory: processed_reads
+
+##### Read length filters #####
+
 min_length: 170
 max_length: 400
-barcodes:
-  # sampleX: sampleX
-  barcode01: barcode01
-  barcode02: barcode02
-  barcode03: barcode03
-  barcode04: barcode04
-  barcode05: barcode05
-  barcode06: barcode06
-  barcode07: barcode07
-  barcode08: barcode08
-  barcode09: barcode09
-  barcode10: barcode10
-  barcode11: barcode11
-  barcode12: barcode12
-  barcode13: barcode13
-  barcode14: barcode14
-  barcode15: barcode15
-  barcode16: barcode16
-  barcode17: barcode17
-  barcode18: barcode18
-  barcode19: barcode19
-  barcode20: barcode20
-  barcode21: barcode21
-  barcode22: barcode22
-  barcode23: barcode23
-  barcode24: barcode24
+
+##### Genes amplified #####
+
 genes:
   PRIMA1: PRIMA1
   HSP4: HSP4
@@ -37,3 +18,45 @@ genes:
   GM7: GM7
   GM9: GM9
 
+##### Mapping reference panel #####
+
+references_file: references/genes.fasta
+
+##### Porechop options #####
+
+require_two_barcodes: "True"
+discard_middle: "True"
+split_reads: "False"
+discard_unassigned: "False" #default keep unassigned, change to --discard_unassigned if you don't want to see unbarcoded reads
+barcode_set: "native" # [native,rapid,all], defaults to `native`, `all` is much slower
+limit_barcodes_to: #barcode csv string e.g. NB01,NB02,NB03,NB04,NB05,NB06
+barcode_threshold: 70
+barcode_diff: 5
+
+##### Barcodes in run #####
+
+barcodes:
+  - NB01
+  - NB02
+  - NB03
+  - NB04
+  - NB05
+  - NB06
+  - NB07
+  - NB08
+  - NB09
+  - NB10
+  - NB11
+  - NB12
+  - NB13
+  - NB14
+  - NB15
+  - NB16
+  - NB17
+  - NB18
+  - NB19
+  - NB20
+  - NB21
+  - NB22
+  - NB23
+  - NB24
