@@ -1,10 +1,33 @@
-rule demultiplex_qcat:
+rule demultiplex_porechop:
     input:
-        reads="pipeline_output/"+run_name + "_all.fastq"
+        config["output_path"] + "/{run_name}.fastq"
+    params:
+        require_two_barcodes=require_two_barcodes,
+        discard_middle=discard_middle,
+        split_reads=split_reads,
+        discard_unassigned=discard_unassigned,
+        barcode_option = barcode_set,
+        limit_barcodes_to = limit_barcodes_to,
+        threshold = "--barcode_threshold " + str(config["barcode_threshold"]),
+        diff = "--barcode_diff " + str(config["barcode_diff"])
+    threads:
+        2
     output:
-        fastq=expand("pipeline_output/demultiplexed/{barcode}.fastq",barcode=config["barcodes"]),
-        report="pipeline_output/demultiplexed/demultiplex_report.txt"
-    threads: 8
+        config["output_path"]+ "/{barcode}_bin/{barcode}.fastq"
     shell:
-        "qcat -f {input.reads} -b pipeline_output/demultiplexed -t 8 -q 80 > {output.report}"
-
+        """
+        porechop \
+        --verbosity 0 \
+        -i {input:q} \
+        -o {output:q} \
+        --threads 2 \
+        --barcode_labels \
+        {params.threshold} \
+        {params.diff}\
+        {params.limit_barcodes_to}\
+        {params.require_two_barcodes}\
+        {params.discard_middle}\
+        {params.split_reads} \
+        {params.discard_unassigned}\
+        {params.barcode_option}
+        """
