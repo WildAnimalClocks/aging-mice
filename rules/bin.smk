@@ -30,12 +30,15 @@ rule bin:
     input:
         blast=config["output_path"]+ "/{barcode}_bin/blast_results/{barcode}.blast.csv",
         reads=config["output_path"]+ "/{barcode}_bin/{barcode}.fastq",
-        references=config["references_file"]
+        references=config["references_file"],
+        primers=config["primers_file"]
     params:
         outdir=config["output_path"]+ "/{barcode}_bin/reads/",
         sample="{barcode}"
     output:
-        summary=config["output_path"]+ "/{barcode}_bin/binning_report.csv",
+        summary=config["output_path"]+ "/{barcode}_bin/binning_report.txt",
+        ref=expand(config["output_path"] + "/{{barcode}}_bin/{gene}.reference.fasta", gene=config["genes"]),
+        bed=expand(config["output_path"] + "/{{barcode}}_bin/{gene}.primers.bed", gene=config["genes"]),
         reads=expand(config["output_path"]+ "/{{barcode}}_bin/reads/{gene}.fastq", gene=config["genes"])
     shell:
         """
@@ -46,4 +49,5 @@ rule bin:
         --output_dir {params.outdir} 
         --summary {output.summary} 
         --sample {params.sample} 
+        --primers {input.primers}
         """

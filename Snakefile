@@ -70,23 +70,19 @@ else:
 
 rule all:
     input:
-        "pipeline_output/cpg_report.csv",
+        # "pipeline_output/cpg_report.csv",
         config["output_path"]+ "/{}.csv".format(run_name),
         expand(config["output_path"]+ "/{barcode}_bin/{barcode}.fastq", barcode=config["barcodes"]),
-        expand(config["output_path"]+ "/{barcode}_bin/reads/{gene}.fastq", gene=config["genes"], barcode=config["barcodes"])
+        expand(config["output_path"]+ "/{barcode}_bin/reads/{gene}.fastq", gene=config["genes"], barcode=config["barcodes"]),
+        expand(config["output_path"]+"/consensus_sequences/{barcode}.fasta"barcode=config["barcodes"])
 
 
 ##### Modules #####
 include: "rules/gather.smk"
-include: "rules/nanopolish_index.smk"
+# include: "rules/nanopolish_index.smk"
 include: "rules/demultiplex.smk"
 include: "rules/bin.smk"
-include: "rules/minion.smk"
-include: "rules/count.smk"
+include: "rules/map_polish.smk"
+# include: "rules/count.smk"
 
-onstart:
-    print("Setting up the artic package")
-    shell("cd fieldbioinformatics && python setup.py install")
-    shell("export PATH=$PATH:`pwd`/artic")
-    shell("cd .. ")
 
