@@ -1,8 +1,8 @@
 ##### Run configuration #####
 
 run_name: validation_run
-path_to_fastq: fastq_pass
-output_directory: processed_reads
+input_path: fastq_pass
+output_path: processed_reads
 
 ##### Read length filters #####
 
@@ -21,7 +21,7 @@ genes:
 ##### Mapping reference panel #####
 
 references_file: references/genes.fasta
-
+primers_file: references/primer_sequences.csv
 ##### Porechop options #####
 
 require_two_barcodes: "True"
