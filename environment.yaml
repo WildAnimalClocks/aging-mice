@@ -1,4 +1,4 @@
-name: aging-mice
+name: clock
 channels:
   - bioconda
   - conda-forge
