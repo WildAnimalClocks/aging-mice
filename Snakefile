@@ -4,9 +4,6 @@ from Bio import SeqIO
 import pysam
 
 configfile: "config.yaml"
-run_name = str(config["run_name"])
-
-
 ##### Configuration #####
 
 # trim trailing slashes from paths to avoid snakemake complaining of double '/' in paths
@@ -36,7 +33,6 @@ except:
     pass
     # print("No barcodes given, will search for all barcodes within the {} barcode list.".format(config["barcode_set"]))
 
-
 discard_unassigned = ""
 if str(config["discard_unassigned"]).lower()=="true":
     discard_unassigned= " --discard_unassigned"
@@ -64,25 +60,31 @@ if str(config["discard_middle"]).lower()=="true":
 else:
     discard_middle= ""
 
-
-
 ##### Target rules #####
 
 rule all:
     input:
+        config["output_path"]+ "/{}.fastq".format(config["run_name"]),
+        expand(config["output_path"]+ "/demultiplexed_reads/{barcode}.fastq", barcode=config["barcodes"]),
+        expand(config["output_path"]+ "/mapping_information/{barcode}.paf", barcode=config["barcodes"]),
+        expand(config["output_path"] + "/binned/{barcode}/{gene}.fastq", barcode=config["barcodes"], gene=config["genes"]),
+        config["output_path"] + "/binned/report.csv"
         # "pipeline_output/cpg_report.csv",
-        config["output_path"]+ "/{}.csv".format(run_name),
-        expand(config["output_path"]+ "/{barcode}_bin/{barcode}.fastq", barcode=config["barcodes"]),
-        expand(config["output_path"]+ "/{barcode}_bin/reads/{gene}.fastq", gene=config["genes"], barcode=config["barcodes"]),
-        expand(config["output_path"]+"/consensus_sequences/{barcode}.fasta"barcode=config["barcodes"])
+        # config["output_path"]+ "/{}.csv".format(run_name),
+        # expand(config["output_path"]+ "/{barcode}_bin/{barcode}.fastq", barcode=config["barcodes"]),
+        # expand(config["output_path"]+ "/{barcode}_bin/reads/{gene}.fastq", gene=config["genes"], barcode=config["barcodes"]),
+        # expand(config["output_path"]+"/consensus_sequences/{barcode}.fasta"barcode=config["barcodes"])
 
 
 ##### Modules #####
 include: "rules/gather.smk"
-# include: "rules/nanopolish_index.smk"
 include: "rules/demultiplex.smk"
 include: "rules/bin.smk"
-include: "rules/map_polish.smk"
+
+# include: "rules/nanopolish_index.smk"
+
+# 
+# include: "rules/map_polish.smk"
 # include: "rules/count.smk"
 
 

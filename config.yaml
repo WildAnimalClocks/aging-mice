@@ -1,13 +1,13 @@
 ##### Run configuration #####
 
 run_name: validation_run
-input_path: fastq_pass
+input_path: fastq_pass_validation
 output_path: processed_reads
 
 ##### Read length filters #####
 
-min_length: 170
-max_length: 400
+min_length: 150
+max_length: 420
 
 ##### Genes amplified #####
 
@@ -16,12 +16,12 @@ genes:
   HSP4: HSP4
   KCNS1: KCNS1
   GM7: GM7
-  GM9: GM9
 
 ##### Mapping reference panel #####
 
-references_file: references/genes.converted.modified.fasta
+references_file: references/genes.converted.both.fasta
 primers_file: references/primer_sequences.csv
+
 ##### Porechop options #####
 
 require_two_barcodes: "True"
