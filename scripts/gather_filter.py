@@ -1,60 +1,73 @@
-#adapted from Nick Loman's script gather.py
-import sys
 from Bio import SeqIO
-import tempfile
 import os
-import pandas as pd
-from collections import defaultdict
 import argparse
 
-parser = argparse.ArgumentParser(description='Gathering and filtering files.')
-parser.add_argument("--min_length", action="store", type=int, dest="min_length")
-parser.add_argument("--max_length", action="store", type=int, dest="max_length")
-parser.add_argument("--run_name", action="store", type=str, dest="run_name")
-parser.add_argument("--path_to_fastq", action="store", type=str, dest="path_to_fastq")
-parser.add_argument("--output_directory", action="store", type=str, dest="output_directory")
+def parse_args():
+    parser = argparse.ArgumentParser(description='Gathering and filtering files.')
 
-params = parser.parse_args()
+    parser.add_argument("--min_length", action="store", type=int, dest="min_length")
+    parser.add_argument("--max_length", action="store", type=int, dest="max_length")
 
-directory = params.path_to_fastq
+    parser.add_argument("--path_to_fastq", action="store", type=str, dest="path_to_fastq")
+    parser.add_argument("--output_file", action="store", type=str, dest="output_file")
 
-min_length=params.min_length
-max_length=params.max_length
+    return parser.parse_args()
 
+def count_files(directory):
+    file_count = 0
 
-all_fastq_outfn = "{}/{}.fastq".format(params.output_directory, params.run_name)
-all_fastq_outfh = open(all_fastq_outfn, "w")
+    for r,d,files in os.walk(directory):
+        
+        for f in files:
+            if f.endswith(".fastq") or f.endswith(".fq"):
+                file_count +=1
+    return file_count
 
-fastq = defaultdict(list)
-for root, dirs, files in os.walk(directory):
-    paths = os.path.split(root)
-    local_dir = paths[-1]
-    fastq[local_dir].extend([root+'/'+f for f in files if f.endswith('.fastq')])
+if __name__ == '__main__':
 
-for local_dir, fastq in list(fastq.items()):
-    if len(fastq):
-        print("Processing {} files in {}".format(len(fastq), local_dir))
+    args = parse_args()
 
-        dups = set()
-        uniq = 0
-        total = 0    
-        for f in fastq:
-            for rec in SeqIO.parse(open(f), "fastq"):
-                if len(rec) > max_length:
-                    continue
-                if len(rec) < min_length:
-                    continue
+    with open(str(args.output_file), "w") as fw:
 
-                total += 1
-                if rec.id not in dups:
-                    SeqIO.write([rec], all_fastq_outfh, "fastq")
+        file_count = count_files(str(args.path_to_fastq))
 
-                    dups.add(rec.id)
-                    uniq += 1
+        if file_count >=1 :
+            print(f"Found {file_count} fastq files.\nGathering now.")
 
-        print("Processed: {}\t{}".format(total, uniq))
+            duplicates = set()
+            unique_reads = 0
+            total_reads = 0 
+            
+            records = []
 
-all_fastq_outfh.close()
+            for r,d,files in os.walk(str(args.path_to_fastq)):
 
+                current_dir = r.split('/')[-1]
+                fastq_files = [i for i in files if i.endswith(".fastq") or i.endswith("fq")]
+
+                print(f"\tProcessing {len(fastq_files)} files in {current_dir}")
+
+                for f in fastq_files:
+                    for record in SeqIO.parse(r + '/' + f, "fastq"):
+                        if len(record) > int(args.max_length):
+                            continue
+                        if len(record) < int(args.min_length):
+                            continue
+
+                        total_reads += 1
+                        if record.id not in duplicates:
+                            records.append(record)
+
+                            duplicates.add(record.id)
+
+                            unique_reads += 1
+
+            SeqIO.write(records, fw, "fastq")
+            print(f"Write {unique_reads} reads to {args.output_file}.")
+            dups = total_reads - unique_reads
+            print(f"Found {dups} duplicate reads.")
+
+        else:
+            print(f"Found {file_count} fastq files in this directory.\nExiting.")
 
 
