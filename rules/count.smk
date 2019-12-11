@@ -1,3 +1,10 @@
+rule chorepop_align:
+    input:
+        amp_seqs = "references/genes.modified.converted.fasta",
+        reads = config["output_path"] + "/binned/{{barcode}}/{gene}.fastq"
+    output:
+        
+
 # rule align:
 #     input:
 #         cns="pipeline_output/minion_output/{barcode}_bin/{barcode}_{gene}.consensus.fasta",
