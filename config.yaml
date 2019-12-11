@@ -1,7 +1,7 @@
 ##### Run configuration #####
 
 run_name: validation_run
-input_path: fastq_pass_validation
+input_path: "/Users/aineniamhotoole/VirusEvolution Dropbox/Aine OToole/aging-mice/Validation_Apo_set/Validation/20191011_1425_MN21399_ABB311_dcdcc438/fastq_pass"
 output_path: processed_reads
 
 ##### Read length filters #####
