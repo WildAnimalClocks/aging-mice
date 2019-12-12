@@ -1,7 +1,7 @@
 import argparse
 import os
 import sys
-
+from collections import Counter
 import parasail
 from Bio import SeqIO
 
@@ -41,38 +41,75 @@ def parse_cigar(cigar, reference):
         print(i)
     # return seq
 
-def align_read(query, reference, matrix, gap_open=20, gap_extension=1):
+def get_best_reference(query, ref_dict, matrix):
+    best_reference_alignment = {
+        "reference": "None",
+        "identity": 0
+        }
+    for ref in ref_dict:
+        new_reference_alignment = align_read(query, ref, ref_dict[ref], matrix)
+
+        if best_reference_alignment["identity"] < new_reference_alignment["identity"]:
+            best_reference_alignment = new_reference_alignment
+        else:
+            pass
+    return best_reference_alignment
+
+def align_read(query, ref_id, reference, matrix, gap_open=20, gap_extension=1):
 
     result = parasail.sw_trace_striped_8(query, reference, gap_open, gap_extension, matrix)
     traceback = result.get_traceback('|', '.', ' ')
     query_start = result.cigar.beg_query
     reference_start = result.cigar.beg_ref
-    cigar = result.cigar.decode.decode("UTF-8")
-    print("cigar", cigar)
+    # cigar = result.cigar.decode.decode("UTF-8")
 
     result = parasail.sw_stats_striped_8(query, reference, gap_open, gap_extension, matrix)
-    
-    return {
-        "query_start": query_start,
-        "reference_start": reference_start,
-        "identity": result.matches / result.len_ref,
-        "cigar": cigar,
-        "ref": traceback.ref,
-        "comp": traceback.comp,
-        "query": traceback.query
-    }
+    try:
+        return {
+            "reference":ref_id,
+            "query_start": query_start,
+            "reference_start": reference_start,
+            "matches": result.matches,
+            "len": result.len_ref,
+            "identity": result.matches / result.len_ref,
+            "ref": traceback.ref,
+            "comp": traceback.comp,
+            "query": traceback.query
+        }
+    except:
+        return {
+            "reference":ref_id,
+            "identity":0,
+            "query_start": query_start,
+            "len": result.len_ref,
+            "reference_start": reference_start,
+            "ref": traceback.ref,
+            "comp": traceback.comp,
+            "query": traceback.query
+        }
 
-def process_file(reads,reference):
+def process_file(reads,references):
+
     nuc_matrix = parasail.matrix_create("ACGT", 2, -1)
+    counts = Counter()
+    
     for record in SeqIO.parse(reads, "fastq"):
-        print("the record id is",record.id)
-        print("the seq is",record.seq)
-        stats = align_read(str(record.seq), reference, nuc_matrix, gap_open=10, gap_extension=1)
-        print('\n',stats["query"],'\n', stats["comp"],'\n', stats["ref"], stats["query_start"], stats["reference_start"])
-        print(stats["ref"][61])
-        get_site(64, stats)
 
-        # pairs = parse_cigar(stats["cigar"], reference)
+        # print("*****")
+        # print("the record id is",record.id)
+        stats = get_best_reference(str(record.seq), references, nuc_matrix)
+        if stats["identity"] > 0.5:
+
+            print('\n', stats["reference"], '\n', stats["query"],'\n', stats["comp"],'\n', stats["ref"])
+            print(record.id, stats["identity"], stats["query_start"], stats["reference_start"])
+            counts[stats["reference"]]+=1
+
+        else:
+            counts["no homology"]+=1
+    return counts
+        # print(stats["ref"][61])
+        # get_site(64, stats)
+
 
 def get_site(cpg_index, stats):
     adjusted_index = cpg_index - 1 - stats["reference_start"]
@@ -87,12 +124,13 @@ def get_site(cpg_index, stats):
             current_index +=1
 
 
-
-
 if __name__ == '__main__':
 
     args = parse_args()
-    ref_seq = ""
+    references = {}
     for record in SeqIO.parse(args.reference, "fasta"):
-        ref_seq = str(record.seq)
-    process_file(str(args.reads), ref_seq)
+         references[record.id] = str(record.seq)
+
+    counts = process_file(str(args.reads), references)
+    for i in counts:
+        print(i, '\t', counts[i])
