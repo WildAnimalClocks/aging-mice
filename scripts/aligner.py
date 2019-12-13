@@ -6,13 +6,12 @@ import parasail
 from Bio import SeqIO
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Parsing blast output.')
+    parser = argparse.ArgumentParser(description='PARA-site: A tool for assigning CpG sites using PARASAIL.')
 
     parser.add_argument("--reads", action="store", type=str, dest="reads")
     parser.add_argument("--reference", action="store", type=str, dest="reference")
-    parser.add_argument("--cpg_sites", action="store", type=str, dest="cpg")
+    parser.add_argument("--cpg_csv", action="store", type=str, dest="cpg")
     
-
     return parser.parse_args()
 
 def parse_cigar(cigar, reference):
@@ -98,14 +97,14 @@ def process_file(reads,references):
         # print("*****")
         # print("the record id is",record.id)
         stats = get_best_reference(str(record.seq), references, nuc_matrix)
-        if stats["identity"] > 0.5:
+        if stats["identity"] > 0.6:
 
-            print('\n', stats["reference"], '\n', stats["query"],'\n', stats["comp"],'\n', stats["ref"])
+            # print('\n', stats["reference"], '\n', stats["query"],'\n', stats["comp"],'\n', stats["ref"])
             print(record.id, stats["identity"], stats["query_start"], stats["reference_start"])
             counts[stats["reference"]]+=1
 
         else:
-            counts["no homology"]+=1
+            counts["no good match"]+=1
     return counts
         # print(stats["ref"][61])
         # get_site(64, stats)
