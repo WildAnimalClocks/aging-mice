@@ -59,7 +59,7 @@ snakemake --cores X
 ```
 
 where X is the number of threads you wish to run.
-
+<!-- 
 # pipeline description
 
 <img src="https://github.com/aineniamh/aging-mice/blob/master/one_sample_dag.svg">
@@ -88,4 +88,4 @@ The ``artic minion`` pipeline, written by Nick Loman, is then run for each ``bar
 8. organise_minion_output \
 Moves the output for each gene into the relevant barcode directory ``pipeline_output/minion_output/barcodeX_bin/``.
 9. count \
-Parses the output vcf files and produces a report, ``cpg_report.csv`` in the ``pipeline_output`` directory, with information about percentage reads and read counts of modified/ unmodified CpG sites.
+Parses the output vcf files and produces a report, ``cpg_report.csv`` in the ``pipeline_output`` directory, with information about percentage reads and read counts of modified/ unmodified CpG sites. -->
