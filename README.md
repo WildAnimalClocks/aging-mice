@@ -8,7 +8,7 @@ Repository for a snakemake pipeline for running analysis for the aging-mice MinI
 
 ## setup
 
-Although not a requirement, an install of conda will make the setup of this pipeline on your local machine much more streamlined. I have created an ``aging-mice`` conda environment which will allow you to access all the software required for the pipeline to run. To install conda, visit here https://conda.io/docs/user-guide/install/ in a browser. 
+Although not a requirement, an install of conda will make the setup of this pipeline on your local machine much more streamlined. I have created an ``epi_clock`` conda environment which will allow you to access all the software required for the pipeline to run. To install conda, visit here https://conda.io/docs/user-guide/install/ in a browser. 
 
 > *Recommendation:* Install the `64-bit Python 3.6` version of Miniconda
 
@@ -27,7 +27,7 @@ conda env create -f aging-mice/envs/aging-mice.yaml
 To activate the environment, type:
 
 ```bash
-source activate aging-mice
+source activate epi_clock
 ```
 
 To deactivate the environment, enter:
@@ -42,7 +42,7 @@ To run the analysis using snakemake, you may need to customise the ``config.yaml
 
 Inside the ``config.yaml`` file, you can change your MinION ``run_name`` and the barcode and gene names. I have filled in the 5 gene names from the original PCR and MinION run, but this can be modified here in the future if the study design changes.
 
-Ensure ```path_to_fast5``` and ```path_to_fastq``` point to where your data is.
+Ensure ```input_path``` points to where your fastq reads are.
 
 ## running the pipeline
 
