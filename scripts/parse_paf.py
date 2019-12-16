@@ -50,15 +50,21 @@ def parse_paf(paf, ref_dict):
                 if mapping["read_name"] in ref_dict[mapping["ref_hit"]]:
                     counts["split_hit"] +=1
                 else:
-                    ref_dict[mapping["ref_hit"]].append(mapping["read_name"])
+                    ref_dict[mapping["ref_hit"]].append((mapping["read_name"], mapping["coord_start"], mapping["coord_end"]))
 
     return counts
 
-def get_records(read_names, reads):
+def get_records(read_list, reads):
     records = []
+    read_info = {}
+    for i in read_list:
+        read_info[i[0]] = (int(i[1]), int(i[2]))
     for record in SeqIO.parse(reads, "fastq"):
-        if record.id in read_names:
+        
+        if record.id in read_info:
+            
             records.append(record)
+
     return records
 
 if __name__ == '__main__':
@@ -81,7 +87,3 @@ if __name__ == '__main__':
             SeqIO.write(gene_records, fw, "fastq")
     freport.close()
 
-
-
-
-        

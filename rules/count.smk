@@ -1,27 +1,39 @@
-rule chorepop_align:
+rule ParaMethR:
     input:
-        amp_seqs = "references/genes.modified.converted.fasta",
-        reads = config["output_path"] + "/binned/{{barcode}}/{gene}.fastq"
+        refs = "references/genes.converted.ambiguous.fasta",
+        reads = config["output_path"] + "/demultiplexed_reads/{barcode}.fastq",
+        cpg = "references/cpg_sites.csv",
+        matrix = "references/substitution_matrix.txt",
+    params:
+        path_to_script = workflow.current_basedir,
+        sample = "{barcode}"
     output:
-        
-
-# rule align:
-#     input:
-#         cns="pipeline_output/minion_output/{barcode}_bin/{barcode}_{gene}.consensus.fasta",
-#         refs="references/mod_and_unmod/{gene}.fasta"
-#     output:
-#         "pipeline_output/mod_counting/{barcode}_bin/{barcode}_{gene}.aln.fasta"
-#     shell:
-#         "cat {input.cns} {input.refs} > pipeline_output/mod_counting/{barcode}_bin/cns_and_ref_{wildcards.gene}.fasta && "
-#         "mafft pipeline_output/mod_counting/{barcode}_bin/cns_and_ref_{wildcards.gene}.fasta > {output}"
-
-rule count:
-    input:
-        vcf=expand("pipeline_output/minion_output/{barcode}_bin/{barcode}_{gene}.vcf",barcode=config["barcodes"], gene=config["genes"]),
-        cpg="references/cpg_sites.csv",
-        age="references/ages.csv"
-    output:
-        cpg="pipeline_output/cpg_report.csv",
-        cpg_wide="pipeline_output/cpg_per_position.csv"
+        report = config["output_path"] +"/processed_reads/counts/{barcode}.cpg_counts.csv",
+        counts = config["output_path"] +"/processed_reads/counts/{barcode}.gene_counts.csv"
     shell:
-        "python scripts/variant_counts.py --cpg_info {input.cpg} --out_file {output.cpg} --ages {input.age} --cpg_wide {output.cpg_wide}"
+        """
+        python {params.path_to_script}/../scripts/paramethr.py \
+            --reads {input.reads} \
+            --reference {input.refs} \
+            --cpg_csv {input.cpg} \
+            --substitution_matrix {input.matrix} \
+            --sample {params.sample} \
+            --report {output.report} \
+            --counts {output.counts}
+        """
+
+rule gather_reports:
+    input:
+        expand(config["output_path"] +"/processed_reads/counts/{barcode}.gene_counts.csv", barcode = config["barcodes"])
+    output:
+        config["output_path"] +"/reports/cpg_counts.csv"
+    shell:
+        "cat {input} > {output}"
+
+rule gather_counts:
+    input:
+        expand(config["output_path"] +"/processed_reads/counts/{barcode}.cpg_counts.csv", barcode = config["barcodes"])
+    output:
+        config["output_path"] +"/reports/gene_counts.csv"
+    shell:
+        "cat {input} > {output}"

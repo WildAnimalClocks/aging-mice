@@ -27,6 +27,7 @@ rule demultiplex_porechop:
         -b {params.outdir} \
         --threads 2 \
         --barcode_labels \
+        --untrimmed \
         {params.threshold} \
         {params.diff}\
         {params.limit_barcodes_to}\
