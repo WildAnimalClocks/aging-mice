@@ -64,11 +64,12 @@ else:
 
 rule all:
     input:
-        config["output_path"]+ "/{}.fastq".format(config["run_name"]),
+        # config["output_path"]+ "/{}.fastq".format(config["run_name"]),
         expand(config["output_path"]+ "/demultiplexed_reads/{barcode}.fastq", barcode=config["barcodes"]),
-        expand(config["output_path"]+ "/mapping_information/{barcode}.paf", barcode=config["barcodes"]),
-        expand(config["output_path"] + "/binned/{barcode}/{gene}.fastq", barcode=config["barcodes"], gene=config["genes"]),
-        config["output_path"] + "/binned/report.csv"
+        # expand(config["output_path"]+ "/mapping_information/{barcode}.paf", barcode=config["barcodes"]),
+        # expand(config["output_path"] + "/binned/{barcode}/{gene}.fastq", barcode=config["barcodes"], gene=config["genes"]),
+        config["output_path"] + "/reports/cpg_counts.csv",
+        config["output_path"] + "/reports/gene_counts.csv"
         # "pipeline_output/cpg_report.csv",
         # config["output_path"]+ "/{}.csv".format(run_name),
         # expand(config["output_path"]+ "/{barcode}_bin/{barcode}.fastq", barcode=config["barcodes"]),
@@ -79,8 +80,8 @@ rule all:
 ##### Modules #####
 include: "rules/gather.smk"
 include: "rules/demultiplex.smk"
-include: "rules/bin.smk"
-
+# include: "rules/bin.smk"
+include: "rules/count.smk"
 # include: "rules/nanopolish_index.smk"
 
 # 
