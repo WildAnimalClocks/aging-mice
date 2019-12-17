@@ -9,6 +9,9 @@ configfile: "config.yaml"
 # trim trailing slashes from paths to avoid snakemake complaining of double '/' in paths
 config["output_path"] = config["output_path"].rstrip("/")
 config["input_path"] = config["input_path"].rstrip("/")
+# escape spaces in path
+config["input_path"] = config["input_path"].replace(" ","\ ")
+config["output_path"] = config["output_path"].replace(" ","\ ")
 
 # todo - check that 'barcode_set' is one of 'native', 'rapid', `pcr` or 'all' and throw error if not
 barcode_set = " --native_barcodes"
@@ -64,10 +67,8 @@ else:
 
 rule all:
     input:
-        # config["output_path"]+ "/{}.fastq".format(config["run_name"]),
+        config["output_path"]+ "/{}.fastq".format(config["run_name"]),
         expand(config["output_path"]+ "/demultiplexed_reads/{barcode}.fastq", barcode=config["barcodes"]),
-        # expand(config["output_path"]+ "/mapping_information/{barcode}.paf", barcode=config["barcodes"]),
-        # expand(config["output_path"] + "/binned/{barcode}/{gene}.fastq", barcode=config["barcodes"], gene=config["genes"]),
         config["output_path"] + "/reports/cpg_counts.csv",
         config["output_path"] + "/reports/gene_counts.csv"
         # "pipeline_output/cpg_report.csv",
@@ -80,12 +81,6 @@ rule all:
 ##### Modules #####
 include: "rules/gather.smk"
 include: "rules/demultiplex.smk"
-# include: "rules/bin.smk"
 include: "rules/count.smk"
-# include: "rules/nanopolish_index.smk"
-
-# 
-# include: "rules/map_polish.smk"
-# include: "rules/count.smk"
 
 

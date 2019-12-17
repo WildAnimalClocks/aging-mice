@@ -1,8 +1,8 @@
 ##### Run configuration #####
 
 run_name: validation_run
-input_path: path/to/fastq_pass
-output_path: path/to/output
+input_path: "/Users/aineniamhotoole/VirusEvolution Dropbox/Aine OToole/aging-mice/Validation_Apo_set/Validation/20191011_1425_MN21399_ABB311_dcdcc438/fastq_pass"
+output_path: processed_reads
 
 ##### Read length filters #####
 
@@ -17,11 +17,12 @@ genes:
   KCNS1: KCNS1
   GM7: GM7
 
-##### Reference panel #####
+##### Reference files #####
 
 references_file: references/genes.converted.ambiguous.fasta
 substitution_matrix: references/substitution_matrix.txt
 cpg_csv: references/cpg_csv.csv
+
 
 ##### Porechop options #####
 
