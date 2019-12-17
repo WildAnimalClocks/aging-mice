@@ -3,7 +3,7 @@ import os
 import argparse
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Gathering and filtering files.')
+    parser = argparse.ArgumentParser(description='Gathering and filtering files by read length.')
 
     parser.add_argument("--min_length", action="store", type=int, dest="min_length")
     parser.add_argument("--max_length", action="store", type=int, dest="max_length")
