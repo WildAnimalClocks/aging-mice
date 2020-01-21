@@ -1,7 +1,7 @@
 import os
 import collections
 from Bio import SeqIO
-import pysam
+
 
 configfile: "config.yaml"
 ##### Configuration #####
@@ -71,11 +71,6 @@ rule all:
         expand(config["output_path"]+ "/demultiplexed_reads/{barcode}.fastq", barcode=config["barcodes"]),
         config["output_path"] + "/reports/cpg_counts.csv",
         config["output_path"] + "/reports/gene_counts.csv"
-        # "pipeline_output/cpg_report.csv",
-        # config["output_path"]+ "/{}.csv".format(run_name),
-        # expand(config["output_path"]+ "/{barcode}_bin/{barcode}.fastq", barcode=config["barcodes"]),
-        # expand(config["output_path"]+ "/{barcode}_bin/reads/{gene}.fastq", gene=config["genes"], barcode=config["barcodes"]),
-        # expand(config["output_path"]+"/consensus_sequences/{barcode}.fasta"barcode=config["barcodes"])
 
 
 ##### Modules #####
