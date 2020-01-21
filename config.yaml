@@ -1,8 +1,8 @@
 ##### Run configuration #####
 
-run_name: validation_run
-input_path: "/Users/aineniamhotoole/VirusEvolution Dropbox/Aine OToole/aging-mice/Validation_Apo_set/Validation/20191011_1425_MN21399_ABB311_dcdcc438/fastq_pass"
-output_path: processed_reads
+run_name: RunX
+input_path: path/to/input_reads
+output_path: analysis
 
 ##### Read length filters #####
 
@@ -33,7 +33,7 @@ discard_unassigned: "False" #default keep unassigned, change to --discard_unassi
 barcode_set: "native" # [native,rapid,all], defaults to `native`, `all` is much slower
 limit_barcodes_to: #barcode csv string e.g. NB01,NB02,NB03,NB04,NB05,NB06
 barcode_threshold: 70
-barcode_diff: 5
+barcode_diff: 3
 
 ##### Barcodes in run #####
 
