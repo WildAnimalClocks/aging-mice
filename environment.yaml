@@ -1,32 +1,23 @@
-name: epi_clock
+name: epi-clock
 channels:
   - bioconda
   - conda-forge
   - defaults
 dependencies:
   - biopython=1.74
-  - blast=2.7.1
   - coreutils=8.25
   - mafft
-  # - medaka=0.10.0
   - minimap2=2.17
-  - pandas=0.25.2
   - pip=19.3.1
   - python=3.6
-  # - samtools=1.9
-  - snakemake=5.7.1
-  # - seqtk
-  # - racon=1.4.7
+  - snakemake-minimal
   - pip:
     - msgpack==0.6.2
     - binlorry==1.3.0a1
     - git+https://github.com/artic-network/Porechop.git@v3.2pre1
-    # - h5py==2.7.1 
     - pytools
     - scipy==1.3.1
-    - seaborn
     - parasail
-    # - tensorflow==1.14.0
     - matplotlib==3.1.1
 
 
