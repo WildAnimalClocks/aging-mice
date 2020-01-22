@@ -23,8 +23,8 @@ rule demultiplex_porechop:
         """
         porechop \
         --verbosity 0 \
-        -i {input.gathered_file} \
-        -b {params.outdir} \
+        -i {input.gathered_file:q} \
+        -b {params.outdir:q} \
         --threads 2 \
         --barcode_labels \
         --untrimmed \

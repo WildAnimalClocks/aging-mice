@@ -1,7 +1,6 @@
 import os
 import collections
 from Bio import SeqIO
-import pysam
 
 configfile: "config.yaml"
 ##### Configuration #####
@@ -9,9 +8,7 @@ configfile: "config.yaml"
 # trim trailing slashes from paths to avoid snakemake complaining of double '/' in paths
 config["output_path"] = config["output_path"].rstrip("/")
 config["input_path"] = config["input_path"].rstrip("/")
-# escape spaces in path
-config["input_path"] = config["input_path"].replace(" ","\ ")
-config["output_path"] = config["output_path"].replace(" ","\ ")
+
 
 # todo - check that 'barcode_set' is one of 'native', 'rapid', `pcr` or 'all' and throw error if not
 barcode_set = " --native_barcodes"
@@ -70,13 +67,7 @@ rule all:
         config["output_path"]+ "/{}.fastq".format(config["run_name"]),
         expand(config["output_path"]+ "/demultiplexed_reads/{barcode}.fastq", barcode=config["barcodes"]),
         config["output_path"] + "/reports/cpg_counts.csv",
-        config["output_path"] + "/reports/gene_counts.csv"
-        # "pipeline_output/cpg_report.csv",
-        # config["output_path"]+ "/{}.csv".format(run_name),
-        # expand(config["output_path"]+ "/{barcode}_bin/{barcode}.fastq", barcode=config["barcodes"]),
-        # expand(config["output_path"]+ "/{barcode}_bin/reads/{gene}.fastq", gene=config["genes"], barcode=config["barcodes"]),
-        # expand(config["output_path"]+"/consensus_sequences/{barcode}.fasta"barcode=config["barcodes"])
-
+        config["output_path"] +"/reports/cpg_wide.csv"
 
 ##### Modules #####
 include: "rules/gather.smk"

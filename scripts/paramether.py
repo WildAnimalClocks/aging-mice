@@ -66,7 +66,7 @@ def align_read(query, ref_id, reference, matrix, gap_open=3, gap_extension=2):
             "query": traceback.query
         }
 
-def process_file(reads,references,cpg_dict,sample,output_file,cpg_counter,nuc_matrix):
+def process_file(reads,references,cpg_dict,sample,cpg_counter,nuc_matrix):
 
     
     counts = Counter()
@@ -81,10 +81,10 @@ def process_file(reads,references,cpg_dict,sample,output_file,cpg_counter,nuc_ma
 
         background_error_rate = get_background_error_rate(stats)
 
-        output_file.write('{},{},{},{},{},{},{}\n'.format(sample,best_ref,direction,stats["identity"],stats["query_start"],stats["reference_start"],background_error_rate))
+        # output_file.write('{},{},{},{},{},{},{}\n'.format(sample,best_ref,direction,stats["identity"],stats["query_start"],stats["reference_start"],background_error_rate))
         alignment_covers = int(stats["aln_len"]) / int(stats["len"]) # doesn't account for gaps so can be > 1
 
-        if stats["identity"] > 0.55:
+        if stats["identity"] > 0.75:
 
             read_seq = ''
             if direction == "forward":
@@ -180,21 +180,39 @@ if __name__ == '__main__':
     fw2 = open(str(args.counts),"w")
     nuc_matrix = parasail.Matrix(str(args.substitution_matrix))
 
-    counts, cpg_counts = process_file(str(args.reads), references, cpg_dict, args.sample, fw, cpg_counter,nuc_matrix)
+    counts, cpg_counts = process_file(str(args.reads), references, cpg_dict, args.sample, cpg_counter,nuc_matrix)
 
-    for i in counts:
-        print(i, '\t', counts[i])
-    
-    for i in cpg_counts:
+    count_str = str(args.sample) + ","
+
+    for i in sorted(cpg_counts):
+
+
+        c_and_t = cpg_counts[i]["C"] + cpg_counts[i]["T"]
+        prop = "NA"
+        if c_and_t > 50:
+            prop = round(cpg_counts[i]["C"] / c_and_t, 3)
+        count_str += f"{prop},"
+        
+        
+
         x = [j for j in cpg_counts[i]]
         y = [cpg_counts[i][j] for j in cpg_counts[i]]
+
         print_string = i + '\t'
         for index in range(len(x)):
             print_string += f"{x[index]}\t{y[index]}\t"
-        print(print_string)
+
         total = sum(cpg_counts[i].values())
+
         c = cpg_counts[i]["C"]
         t = cpg_counts[i]["T"]
-        fw2.write(f"{args.sample},{i},{total},{c},{t}\n")
+        a = cpg_counts[i]["A"]
+        g= cpg_counts[i]["G"]
+        gap = cpg_counts[i]["-"]
+        fw2.write(f"{args.sample},{i},{total},{c},{t},{a},{g},{gap}\n")
+
+    count_str = count_str.rstrip(',')
+    fw.write(count_str+'\n')
+
     fw.close()
     fw2.close()

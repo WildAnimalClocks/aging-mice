@@ -33,7 +33,7 @@ mod_string=mod_string.rstrip(',')
 mod_string += "\n"
     
 file_mods=defaultdict(dict)
-for r,d,f in os.walk("pipeline_output_2/minion_output"):
+for r,d,f in os.walk(""):
     for filename in f:
         if not filename.endswith("primertrimmed.vcf") and filename.endswith(".vcf"):
             print("Counting CpG modifications in file: {}".format(filename))

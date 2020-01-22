@@ -9,9 +9,9 @@ rule gather:
         config["output_path"] + "/"+config["run_name"]+".fastq"
     shell:
         """
-        python {params.path_to_script}/../scripts/gather_filter.py \
+        python {params.path_to_script:q}/../scripts/gather_filter.py \
         --min_length {params.min_length} \
         --max_length {params.max_length} \
-        --path_to_fastq {params.path_to_fastq} \
-        --output_file {output} 
+        --path_to_fastq {params.path_to_fastq:q} \
+        --output_file {output:q} 
         """
