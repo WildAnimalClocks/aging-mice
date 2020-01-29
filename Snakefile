@@ -1,10 +1,6 @@
 import os
 import collections
 from Bio import SeqIO
-<<<<<<< HEAD
-=======
-
->>>>>>> 04e1a28175f6d614f7d83b6ca0acc43ff52cac47
 
 configfile: "config.yaml"
 ##### Configuration #####
