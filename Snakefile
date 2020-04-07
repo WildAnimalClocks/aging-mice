@@ -1,18 +1,21 @@
 import os
 import collections
 from Bio import SeqIO
-<<<<<<< HEAD
-=======
 
->>>>>>> 04e1a28175f6d614f7d83b6ca0acc43ff52cac47
-
-configfile: "config.yaml"
+configfile: "config_shag.yaml"
 ##### Configuration #####
 
 # trim trailing slashes from paths to avoid snakemake complaining of double '/' in paths
-config["output_path"] = config["output_path"].rstrip("/")
-config["input_path"] = config["input_path"].rstrip("/")
+if config.get("output_path"):
+    config["output_path"] = config["output_path"].rstrip("/")
+else:
+    config["output_path"] = "analysis"
 
+if config.get("input_path"):
+    config["input_path"] = config["input_path"].rstrip("/")
+
+
+run_name = config["run_name"]
 
 # todo - check that 'barcode_set' is one of 'native', 'rapid', `pcr` or 'all' and throw error if not
 barcode_set = " --native_barcodes"
@@ -68,7 +71,7 @@ else:
 
 rule all:
     input:
-        config["output_path"]+ "/{}.fastq".format(config["run_name"]),
+        config["output_path"] + "/"+run_name+".fastq",
         expand(config["output_path"]+ "/demultiplexed_reads/{barcode}.fastq", barcode=config["barcodes"]),
         config["output_path"] + "/reports/cpg_counts.csv",
         config["output_path"] +"/reports/cpg_wide.csv"

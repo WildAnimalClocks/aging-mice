@@ -1,8 +1,8 @@
 rule demultiplex_porechop:
     input:
-        gathered_file = config["output_path"] + "/" + config["run_name"]+ ".fastq"
+        gathered_file = config["output_path"] + "/"+config["run_name"]+".fastq"
     params:
-        outdir = config["output_path"]+"/demultiplexed_reads/",
+        outdir = config["output_path"]+"/demultiplexed_reads",
 
         discard_middle=discard_middle,
         split_reads=split_reads,
@@ -23,8 +23,8 @@ rule demultiplex_porechop:
         """
         porechop \
         --verbosity 0 \
-        -i {input.gathered_file:q} \
-        -b {params.outdir:q} \
+        -i '{input.gathered_file}' \
+        -b '{params.outdir}' \
         --threads 2 \
         --barcode_labels \
         --untrimmed \

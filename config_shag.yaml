@@ -1,0 +1,56 @@
+##### Run configuration #####
+
+run_name: Shag1_10birds
+output_path: '/Users/s1680070/VirusEvolution Dropbox/Aine OToole/aging-mice/shag_clock/Shag1_10Birds/analysis/'
+input_path: '/Users/s1680070/VirusEvolution Dropbox/Aine OToole/aging-mice/shag_clock/Shag1_10Birds/fastq_pass/'
+
+##### Read length filters #####
+
+min_length: 140
+max_length: 550
+
+##### Genes amplified #####
+
+genes:
+  Locus2: Locus2
+  Locus5: Locus5
+  Locus7: Locus7
+
+##### Reference files #####
+
+references_file: references/carbo_loci_converted.fasta
+substitution_matrix: references/substitution_matrix.txt
+cpg_csv: references/shag_cpg_sites.csv
+
+
+##### Porechop options #####
+
+require_two_barcodes: "False"
+discard_middle: "True"
+split_reads: "False"
+discard_unassigned: "False" #default keep unassigned, change to --discard_unassigned if you don't want to see unbarcoded reads
+barcode_set: "pcr" # [native,rapid,all], defaults to `native`, `all` is much slower
+limit_barcodes_to: #barcode csv string e.g. NB01,NB02,NB03,NB04,NB05,NB06
+barcode_threshold: 70
+barcode_diff: 3
+
+##### Barcodes in run #####
+
+barcodes:
+  - BC01
+  - BC02
+  - BC06
+  - BC07
+  - BC09
+  - BC11
+  - BC12
+  - BC30
+  - BC35
+  - BC52
+  - BC59
+  - BC62
+  - BC81
+  - BC83
+  - BC85
+  - BC90
+

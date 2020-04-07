@@ -26,11 +26,13 @@ def count_files(directory):
 if __name__ == '__main__':
 
     args = parse_args()
-
+    print(args)
+    for r,d,f in os.walk(args.path_to_fastq):
+        print(r,d,f)
     with open(str(args.output_file), "w") as fw:
-
+        
         file_count = count_files(str(args.path_to_fastq))
-
+        print(args.path_to_fastq)
         if file_count >=1 :
             print(f"Found {file_count} fastq files.\nGathering now.")
 
